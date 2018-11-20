@@ -47,7 +47,6 @@ class HttpTransport implements TransportInterface
     {
         return [
             'Accept-Encoding'  => 'gzip',
-            'Content-Encoding' => 'gzip',
         ];
     }
 
@@ -90,7 +89,7 @@ class HttpTransport implements TransportInterface
                 $this->buildRequestUri($server),
                 [
                     'headers'         => $this->getHeaders(),
-                    'body'            => gzencode($query),
+                    'body'            => $query,
                     'connect_timeout' => $server->getOptions()->getTimeout(),
                 ]
             );
@@ -263,7 +262,7 @@ class HttpTransport implements TransportInterface
                 }
             } else {
                 $params = [];
-                $options['body'] = gzencode($query);
+                $options['body'] = $query;
             }
 
             $response = $this->httpClient->post(
@@ -343,7 +342,7 @@ class HttpTransport implements TransportInterface
                     $body = new MultipartStream($multipart);
                 } else {
                     $params = [];
-                    $body = gzencode($query);
+                    $body = $query;
                 }
 
                 yield new Request('POST', $this->buildRequestUri($server, $params), $this->getHeaders(), $body);
@@ -415,7 +414,7 @@ class HttpTransport implements TransportInterface
     protected function buildRequestUri(Server $server, array $query = []): string
     {
         $uri = $server->getOptions()->getProtocol().'://'.$server->getHost().':'.$server->getPort();
-        
+
         if (!is_null($server->getDatabase())) {
             $query['database'] = $server->getDatabase();
         }
