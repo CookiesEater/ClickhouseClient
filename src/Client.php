@@ -318,7 +318,7 @@ class Client
      */
     public function select(string $query, array $bindings = [], $tables = null): Result
     {
-        $query = $this->prepareQuery($this->appendFormat($query), $bindings);
+        $query = $this->prepareQuery($this->appendFormatJson($query), $bindings);
 
         return $this->getTransport()->get($this->getServer(), $query, $tables);
     }
@@ -342,7 +342,7 @@ class Client
     public function selectAsync(array $queries, int $concurrency = 5): array
     {
         foreach ($queries as $i => $query) {
-            $queries[$i] = [$this->prepareQuery($this->appendFormat($query[0]), $query[1] ?? []), $query[2] ?? null];
+            $queries[$i] = [$this->prepareQuery($this->appendFormatJson($query[0]), $query[1] ?? []), $query[2] ?? null];
         }
 
         return $this->getTransport()->getAsync($this->getServer(), $queries, $concurrency);
@@ -464,13 +464,13 @@ class Client
     }
 
     /**
-     * Append format, if it is not set.
+     * Append format json, if it is not set.
      *
      * @param string $query
      *
      * @return string
      */
-    protected function appendFormat(string $query): string
+    protected function appendFormatJson(string $query): string
     {
         if (!preg_match('/\s+format\s+\w+$/i', $query)) {
             $query .= ' FORMAT JSON';
