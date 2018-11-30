@@ -398,7 +398,7 @@ class HttpTransport implements TransportInterface
                 $result['rows_before_limit_at_least'] ?? null
             );
 
-            return new Result($result['data'] ?? [], $statistic);
+            return new Result($result['data'] ?? [], $statistic, $result);
         } catch (\Exception $e) {
             throw ClientException::malformedResponseFromServer($response);
         }
@@ -415,7 +415,7 @@ class HttpTransport implements TransportInterface
     protected function buildRequestUri(Server $server, array $query = []): string
     {
         $uri = $server->getOptions()->getProtocol().'://'.$server->getHost().':'.$server->getPort();
-        
+
         if (!is_null($server->getDatabase())) {
             $query['database'] = $server->getDatabase();
         }

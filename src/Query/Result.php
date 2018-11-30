@@ -36,15 +36,22 @@ class Result implements \ArrayAccess, \Iterator, \Countable
     protected $current = 0;
 
     /**
+     * @var array
+     */
+    protected $raw;
+
+    /**
      * Result constructor.
      *
      * @param array                                      $rows
      * @param \Tinderbox\Clickhouse\Query\QueryStatistic $statistic
+     * @param array $raw Raw result of query
      */
-    public function __construct(array $rows, QueryStatistic $statistic)
+    public function __construct(array $rows, QueryStatistic $statistic, array $raw = [])
     {
         $this->setRows($rows);
         $this->setStatistic($statistic);
+        $this->setRaw($raw);
     }
 
     /**
@@ -65,6 +72,22 @@ class Result implements \ArrayAccess, \Iterator, \Countable
     protected function setRows(array $rows)
     {
         $this->rows = $rows;
+    }
+
+    /**
+     * @param array $raw
+     */
+    protected function setRaw(array $raw)
+    {
+        $this->raw = $raw;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRaw()
+    {
+        return $this->raw;
     }
 
     /**
