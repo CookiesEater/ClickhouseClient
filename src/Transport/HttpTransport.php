@@ -12,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Tinderbox\Clickhouse\Common\TempTable;
 use Tinderbox\Clickhouse\Exceptions\ClientException;
 use Tinderbox\Clickhouse\Interfaces\TransportInterface;
+use Tinderbox\Clickhouse\Query\QueryMeta;
 use Tinderbox\Clickhouse\Query\QueryStatistic;
 use Tinderbox\Clickhouse\Query\Result;
 use Tinderbox\Clickhouse\Server;
@@ -397,8 +398,9 @@ class HttpTransport implements TransportInterface
                 $result['statistics']['elapsed'] ?? 0,
                 $result['rows_before_limit_at_least'] ?? null
             );
+            $meta = new QueryMeta($result['meta'] ?? []);
 
-            return new Result($result['data'] ?? [], $statistic, $result);
+            return new Result($result['data'] ?? [], $statistic, $meta);
         } catch (\Exception $e) {
             throw ClientException::malformedResponseFromServer($response);
         }
